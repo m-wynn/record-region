@@ -19,11 +19,13 @@ beep() {
 uploadFlag='false'
 location="/tmp/recorded.webm"
 duration="10"
-uploadCmd="upload"
+uploadCmd="upload -u"
 
 while getopts 'put:l:c:' flag; do
   case "${flag}" in
-    l)uploadCmd="$OPTARG" ;;
+    c)uploadCmd="$OPTARG"
+      uploadFlag='true'
+      ;;
     l)location="$OPTARG" ;;
     t)duration="$OPTARG" ;;
     u)uploadFlag='true' ;;
@@ -58,5 +60,5 @@ byzanz-record --verbose --delay=0 ${ARGUMENTS} --duration=$duration $location ||
 beep #beeps after recording is done, but whatever
 
 if [ $uploadFlag == "true" ]; then
-    exec $uploadCmd -u $location || exit -1
+    exec $uploadCmd $location || exit -1
 fi
