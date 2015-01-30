@@ -21,15 +21,18 @@ location="/tmp/recorded.webm"
 duration="10"
 uploadCmd="upload"
 
-while getopts ':put:l:' flag; do
+while getopts 'put:l:c:' flag; do
   case "${flag}" in
+    l)uploadCmd="$OPTARG" ;;
     l)location="$OPTARG" ;;
     t)duration="$OPTARG" ;;
     u)uploadFlag='true' ;;
     p)duration="$(zenity --entry --title='Record time' --text='Time in Seconds')" || exit -1;;
-    *) echo "error Unexpected option ${flag}" ;;
+    *) echo "error Unexpected option ${flag}" && exit -1;;
   esac
 done
+
+which $uploadCmd >/dev/null || (echo "$uploadCmd not found" && exit -1)
 
 #Make sure we're writable
 if [[ -a $location ]]; then
