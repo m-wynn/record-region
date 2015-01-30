@@ -18,7 +18,7 @@ You'll need a few programs installed for this script to work
     $ record-region.sh -u
 
 ###Record, and upload using a custom script:
-    $ record-region.sh -c /path/to/uploader.sh
+    $ record-region.sh -c /path/to/uploader/script
 
 This doesn't necessarily have to be an uploader, just a script that is triggered after the recording is done.
 Also, note that `-c` implies `-u`

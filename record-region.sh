@@ -84,4 +84,6 @@ if [ $uploadCmd == "defaultpomf" ]; then
     else
         echo  "Upload failed"
     fi
+elif [ $uploadCmd != "false" ]; then
+    exec $uploadCmd $location
 fi
