@@ -17,21 +17,27 @@ beep() {
 }
 
 uploadFlag='false'
-place="/tmp/recorded.webm"
+location="/tmp/recorded.webm"
+duration="10"
+uploadCmd="upload"
 
-
-while getopts ':pu' flag; do
+while getopts ':put:l:' flag; do
   case "${flag}" in
+    l)location="$OPTARG" ;;
+    t)duration="$OPTARG" ;;
     u)uploadFlag='true' ;;
-    p)D="--duration=$(zenity --entry --title='Record time' --text='Time in Seconds') /tmp/recorded.webm";;
+    p)D="duration=$(zenity --entry --title='Record time' --text='Time in Seconds')";;
     *) echo "error Unexpected option ${flag}" ;;
   esac
 done
 
-# Duration and output file
-if [ -z "$D" ]; then
-    echo Default recording duration 10s to /tmp/recorded.webm
-    D="--duration=10 $place"
+#Make sure we're writable
+if [[ -a $location ]]; then
+    if [[ ! -w $location ]]; then
+        echo "Could not write to $location"
+    fi
+elif [[ ! -w $(dirname ${location}) ]]; then
+    echo "Could not write to $(dirname ${location})"
 fi
 
 # xrectsel from https://github.com/lolilolicon/FFcast2/blob/master/xrectsel.c
@@ -43,10 +49,11 @@ for (( i=$DELAY; i>0; --i )) ; do
     sleep 1
 done
 beep
-echo "$(tput setaf 2)Recording$(tput sgr0)"
-byzanz-record --verbose --delay=0 ${ARGUMENTS} $D
-beep
-#beeps after recording is done, but whatever
+echo "$(tput setaf 2)Recording$(tput sgr0) with duration $duration and storing to $location"
+byzanz-record --verbose --delay=0 ${ARGUMENTS} --duration=$duration $location || exit -1
+
+beep #beeps after recording is done, but whatever
+
 if [ $uploadFlag == "true" ]; then
-    upload -u $place
+    exec $uploadCmd -u $location || exit -1
 fi
