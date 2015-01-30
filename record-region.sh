@@ -24,6 +24,7 @@ uploadCmd="upload -u"
 while getopts 'put:l:c:' flag; do
   case "${flag}" in
     c)uploadCmd="$OPTARG"
+      which $uploadCmd >/dev/null || exit -1
       uploadFlag='true'
       ;;
     l)location="$OPTARG" ;;
@@ -33,8 +34,6 @@ while getopts 'put:l:c:' flag; do
     *) echo "error Unexpected option ${flag}" && exit -1;;
   esac
 done
-
-which $uploadCmd >/dev/null || (echo "$uploadCmd not found" && exit -1)
 
 #Make sure we're writable
 if [[ -a $location ]]; then
