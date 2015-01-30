@@ -13,7 +13,7 @@ DELAY=3
 
 # Sound notification to let one know when recording is about to start (and ends)
 beep() {
-    paplay /usr/share/sounds/KDE-Im-Irc-Event.ogg &     #Wouldn't be a bad idea to use our own.
+    paplay bell.ogg &     #Wouldn't be a bad idea to use our own.
 }
 
 uploadFlag='false'
