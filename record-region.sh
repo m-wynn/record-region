@@ -26,7 +26,7 @@ while getopts ':put:l:' flag; do
     l)location="$OPTARG" ;;
     t)duration="$OPTARG" ;;
     u)uploadFlag='true' ;;
-    p)D="duration=$(zenity --entry --title='Record time' --text='Time in Seconds')";;
+    p)duration="$(zenity --entry --title='Record time' --text='Time in Seconds')" || exit -1;;
     *) echo "error Unexpected option ${flag}" ;;
   esac
 done
