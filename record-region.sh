@@ -11,25 +11,27 @@
 # Delay before starting
 DELAY=3
 
+#Muffle a warning about accessibility bus.
+export NO_AT_BRIDGE=1
+
 # Sound notification to let one know when recording is about to start (and ends)
 beep() {
-    paplay bell.ogg &     #Wouldn't be a bad idea to use our own.
+    paplay "$(dirname $(readlink -f $0))/bell.ogg" &
 }
 
 uploadFlag='false'
 location="/tmp/recorded.webm"
 duration="10"
-uploadCmd="upload -u"
+uploadCmd="false"
 
 while getopts 'put:l:c:' flag; do
   case "${flag}" in
     c)uploadCmd="$OPTARG"
       which $uploadCmd >/dev/null || exit -1
-      uploadFlag='true'
       ;;
     l)location="$OPTARG" ;;
     t)duration="$OPTARG" ;;
-    u)uploadFlag='true' ;;
+    u)uploadCmd='defaultpomf' ;;
     p)duration="$(zenity --entry --title='Record time' --text='Time in Seconds')" || exit -1;;
     *) echo "error Unexpected option ${flag}" && exit -1;;
   esac
@@ -54,10 +56,32 @@ for (( i=$DELAY; i>0; --i )) ; do
 done
 beep
 echo "$(tput setaf 2)Recording$(tput sgr0) with duration $duration and storing to $location"
-byzanz-record --verbose --delay=0 ${ARGUMENTS} --duration=$duration $location || exit -1
+byzanz-record --verbose --delay=0 ${ARGUMENTS} --duration=$duration $location | while read -r line ; do
+    if [[ $line == "Recording completed. Finishing encoding..." ]]; then
+        beep
+        echo "Encoding recording"
+    fi
+done
 
-beep #beeps after recording is done, but whatever
+if [ $uploadCmd == "defaultpomf" ]; then
+    #heavily inspired by https://github.com/JSchilli1/poomf.sh
+    # upload it and grab the url
+    output=$(curl -F files[]="@$location" "http://pomf.se/upload.php")
 
-if [ $uploadFlag == "true" ]; then
-    exec $uploadCmd $location || exit -1
+    echo "Uploading ${location} to pomf..."
+    pomffilename=""
+
+    if [[ "${output}" =~ '"success":true,' ]]; then
+        pomffilename=$(printf $output | grep -Eo '"url":"[A-Za-z0-9]+.*",' | sed 's/"url":"//;s/",//')
+        echo "$pomffilename"
+        echo  "Upload Completed"
+        urlname="http://a.pomf.se/$pomffilename"
+        echo "$urlname"
+        echo -n $urlname | xclip -selection primary
+        echo -n $urlname | xclip -selection clipboard
+        xdg-open "$urlname"
+        notify-send "Upload Successful" "$urlname"
+    else
+        echo  "Upload failed"
+    fi
 fi

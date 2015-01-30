@@ -6,7 +6,7 @@ You'll need a few programs installed for this script to work
 * [byzanz](https://github.com/GNOME/byzanz) Screen-recording software
 * [xrectsel](https://github.com/lolilolicon/xrectsel) Screen-area selector, found in ffcast2
 * [zenity](https://github.com/GNOME/zenity) Prompt for duration of the recording in seconds.
-* A script to upload to the location of your choice (by default, the script currently calls upload -u)
+* If you don't want to use pomf, you'll need a script that uploads for you.
 
 ## Usage
 
@@ -14,7 +14,7 @@ You'll need a few programs installed for this script to work
     $ record-region.sh
 
 
-###Record and upload using the command `upload -u`:
+###Record and upload to pomf.se:
     $ record-region.sh -u
 
 ###Record, and upload using a custom script:
