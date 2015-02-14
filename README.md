@@ -13,14 +13,14 @@ You'll need a few programs installed for this script to work
 ###Record to the default location (/tmp/recorded.webm) with the default time of 10 seconds:
     $ record-region.sh
 
-
 ###Record and upload to pomf.se:
     $ record-region.sh -u
 
 ###Record, and upload using a custom script:
     $ record-region.sh -c /path/to/uploader/script
 
-This doesn't necessarily have to be an uploader, just a script that is triggered after the recording is done.
+After recording, the script will run `/path/to/uploader/script /location/of/recording`
+This script doesn't necessarily have to be an uploader, just a script that is triggered after the recording is done.
 Also, note that `-c` implies `-u`
 
 ###Record using a specified duration:
@@ -32,4 +32,13 @@ Also, note that `-c` implies `-u`
 ###Store in a custom location
     $ record-region.sh -l /path/to/store.webm
 
-###Options to control the format (webm, gif, etc.) soon
+###Choose a file format
+    $ record-region.sh -f gif
+
+Currently, byzanz-record supports webm (default), flv, gif, ogg, ogv, and byzanz.
+Run `man byzanz-record` for more information.
+
+###Record audio from the default input device
+    $ record.region.sh -a
+
+Note - Audio only works with webm (default), ogg, or ogv formats.
