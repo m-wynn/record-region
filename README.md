@@ -20,7 +20,9 @@ You'll need a few programs installed for this script to work
     $ record-region.sh -c /path/to/uploader/script
 
 After recording, the script will run `/path/to/uploader/script /location/of/recording`
+
 This script doesn't necessarily have to be an uploader, just a script that is triggered after the recording is done.
+
 Also, note that `-c` implies `-u`
 
 ###Record using a specified duration:
@@ -36,6 +38,7 @@ Also, note that `-c` implies `-u`
     $ record-region.sh -f gif
 
 Currently, byzanz-record supports webm (default), flv, gif, ogg, ogv, and byzanz.
+
 Run `man byzanz-record` for more information.
 
 ###Record audio from the default input device
